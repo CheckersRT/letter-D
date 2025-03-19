@@ -17,7 +17,7 @@ export default function addArrows(scene) {
         depth: 0.04,
         bevelSize: 0.05,
         bevelThickness: 0.01,
-        bevelSegments: 4,
+        bevelSegments: 8,
         bevelEnabled: true,
     })
     arrowGeo.center()

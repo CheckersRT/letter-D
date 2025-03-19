@@ -11,8 +11,6 @@ let width = window.innerWidth, height = window.innerHeight
 
 let scene, camera, pivot, renderer, controls, d, cube, planes, frameMat
 
-const gui = new GUI()
-
 init()
 
 function init() {
