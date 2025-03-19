@@ -3,6 +3,7 @@ import * as THREE from "three"
 import { FontLoader, OrbitControls, RGBELoader, TextGeometry } from "three/examples/jsm/Addons.js"
 import addGUI from "./GUI"
 import gsap from "gsap"
+import addArrows from "./arrow"
 
 const canvas = document.querySelector("canvas.webgl")
 
@@ -41,6 +42,7 @@ function init() {
         console.log("onLoad in add Cube");
         addPlanes(environmentMap)
     })
+    addArrows(scene)
 
     renderer = new THREE.WebGLRenderer({canvas: canvas})
     renderer.setSize(width, height)
@@ -309,55 +311,65 @@ function addPlanes(environmentMap, normals, alphaMap) {
 
 }
 
-let angle = 0
-let radius = 7
+
 
 window.addEventListener("keydown", onKeyDown)
-
+let angle = 0
 function onKeyDown(event) {
+    if(event.code !== "ArrowLeft" && event.code !== "ArrowRight") return
 	if (event.code === 'ArrowLeft') {
 		angle += Math.PI / 2;
 	}
 	if (event.code === 'ArrowRight') {
 		angle -= Math.PI / 2;
 	}
+
+    let arrows
+    scene.traverse((object) => {        
+        if(object.name === "arrowContainer") {
+            arrows = object
+        }
+    })
+
     gsap.to(pivot.rotation, {
         y: -angle,
         duration: 1,
         ease: "power2.out"
     })
+    gsap.to(arrows.rotation, {
+        y: -angle,
+        duration: 1,
+        ease: "power2.in"
+    }, "<")
     
-    let tl = gsap.timeline({
+    let tl = gsap.timeline()
+
+    // tl.restart()
+    tl.fromTo(frameMat, {displacementScale: 0},{
+        displacementScale: 4,
+        duration: 0.5,
+        ease: "power2.out",
         onComplete: () => {
             tl.reverse()
         }
     })
-    tl.to(frameMat, {
-        displacementScale: 4,
-        duration: 0.5,
-        ease: "power2.out",
-    })
-
-console.log("planes scale", planes.scale);
-
-    tl.to(planes.scale, {
+    tl.fromTo(planes.scale, {x: 1, y: 1, z: 1},{
         x: 0,
         y: 0,
         z: 0,
         duration: 0.5,
+        onComplete: () => {
+            tl.reverse()
+        }
     }, "<")
 
 }
 
-
 function animate() {
-
     if(!d) return  
-        
-    d.rotation.y += 0.01
-        
+
+    d.rotation.y += 0.01        
 
     renderer.render(scene, camera)
-
 }
 
