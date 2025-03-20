@@ -26,59 +26,136 @@ export default function addGUI(name, params, material) {
                 material.metalness = value
             })
             break;
-        case "plane1":
+        case "side1":
+            // material.ior = 1
+            // material.thickness = 0
+            material.normalMap.repeat.set(0.65, 0.3)
 
-            gui.addColor(params, "color").onChange((value) => {
-                material.color = new THREE.Color(value)
-                material.needsUpdate = true
-            })
+            const side1Folder = gui.addFolder("Side 1")
         
-            gui.add( params, 'transmission', 0, 1, 0.01 )
-                .onChange(() => {
-                    material.transmission = params.transmission;
-                } );
-        
-            gui.add( params, 'opacity', 0, 1, 0.01 )
-                .onChange(() => {
-                    material.opacity = params.opacity;
-                } );
-        
-            gui.add( params, 'metalness', 0, 1, 0.01 )
-                .onChange(() => {
-                    material.metalness = params.metalness
-                } );
-        
-            gui.add( params, 'roughness', 0, 1, 0.01 )
-                .onChange(() => {
-                    material.roughness = params.roughness;
-                } );
-        
-            gui.add( params, 'ior', 1, 2, 0.01 )
+            side1Folder.add( params, 'ior', 1, 2, 0.01 )
                 .onChange(() => {
                     material.ior = params.ior;
                 } );
         
-            gui.add( params, 'thickness', 0, 5, 0.01 )
+            side1Folder.add( params, 'thickness', 0, 1, 0.01 )
                 .onChange(() => {
                     material.thickness = params.thickness;
                 } );
-        
-            gui.add( params, 'specularIntensity', 0, 1, 0.01 )
+            side1Folder.add( params, 'reflectivity', 0, 1, 0.01 )
                 .onChange(() => {
-                    material.specularIntensity = params.specularIntensity;
+                    material.reflectivity = params.reflectivity;
                 } );
-        
-            gui.addColor( params, 'specularColor' )
-                .onChange(() => {
-                    material.specularColor.set( params.specularColor );
-                } );
-        
-            gui.add( params, 'transmissionResolutionScale', 0.01, 1, 0.01 )
-                .name( 'transmission resolution' )
-                .onChange(() => {
-                    renderer.transmissionResolutionScale = params.transmissionResolutionScale;
-                } );
+            side1Folder.add(params, "normalScaleX", 0.01, 2, 0.01).onChange((value) => {
+                const y = material.normalMap.repeat.y
+                material.normalMap.repeat.set(value, y)
+            })
+            side1Folder.add(params, "normalScaleY", 0.01, 2, 0.01).onChange((value) => {
+                const x = material.normalMap.repeat.x
+                material.normalMap.repeat.set(x, value)
+            })
             break;
+        case "side2":
+            // material.ior = 1
+            material.thickness = 0.21
+            material.reflectivity = 0.5
+            material.normalMap.repeat.set(0.2, 0.3)
+
+            console.log("material side 2", material)
+            
+            const side2Folder = gui.addFolder("Side 2")
+        
+            side2Folder.add( params, 'ior', 1, 2, 0.01 )
+                .onChange(() => {
+                    material.ior = params.ior;
+                } );
+        
+            side2Folder.add( params, 'thickness', 0, 1, 0.01 )
+                .onChange(() => {
+                    material.thickness = params.thickness;
+                } );
+            side2Folder.add( params, 'reflectivity', 0, 1, 0.01 )
+                .onChange(() => {
+                    material.reflectivity = params.reflectivity;
+                } );
+            side2Folder.add(params, "normalScaleX", 0.01, 2, 0.01).onChange((value) => {
+                const y = material.normalMap.repeat.y
+                material.normalMap.repeat.set(value, y)
+            })
+            side2Folder.add(params, "normalScaleY", 0.01, 2, 0.01).onChange((value) => {
+                const x = material.normalMap.repeat.x
+                material.normalMap.repeat.set(x, value)
+            })
+            break;
+        case "side3":
+            // material.ior = 1
+            material.thickness = 0.21
+            material.reflectivity = 0.5
+            material.normalMap.repeat.set(0.4, 0.5)
+
+            console.log("material side 3", material)
+            
+            const side3Folder = gui.addFolder("Side 3")
+        
+            side3Folder.add( params, 'ior', 1, 2, 0.01 )
+                .onChange(() => {
+                    material.ior = params.ior;
+                } );
+        
+            side3Folder.add( params, 'thickness', 0, 1, 0.01 )
+                .onChange(() => {
+                    material.thickness = params.thickness;
+                } );
+            side3Folder.add( params, 'reflectivity', 0, 1, 0.01 )
+                .onChange(() => {
+                    material.reflectivity = params.reflectivity;
+                } );
+            side3Folder.add(params, "normalScaleX", 0.01, 2, 0.01).onChange((value) => {
+                const y = material.normalMap.repeat.y
+                material.normalMap.repeat.set(value, y)
+            })
+            side3Folder.add(params, "normalScaleY", 0.01, 2, 0.01).onChange((value) => {
+                const x = material.normalMap.repeat.x
+                material.normalMap.repeat.set(x, value)
+            })
+
+            break;
+
+        case "side4":
+            // material.ior = 1
+            material.thickness = 0.21
+            material.reflectivity = 0.5
+            material.normalMap.repeat.set(0.8, 0.66)
+
+            console.log("material side 3", material)
+            
+            const side4Folder = gui.addFolder("Side 4")
+        
+            side4Folder.add( params, 'ior', 1, 2, 0.01 )
+                .onChange(() => {
+                    material.ior = params.ior;
+                } );
+        
+            side4Folder.add( params, 'thickness', 0, 1, 0.01 )
+                .onChange(() => {
+                    material.thickness = params.thickness;
+                } );
+            side4Folder.add( params, 'reflectivity', 0, 1, 0.01 )
+                .onChange(() => {
+                    material.reflectivity = params.reflectivity;
+                } );
+            side4Folder.add(params, "normalScaleX", 0.01, 2, 0.01).onChange((value) => {
+                const y = material.normalMap.repeat.y
+                material.normalMap.repeat.set(value, y)
+            })
+            side4Folder.add(params, "normalScaleY", 0.01, 2, 0.01).onChange((value) => {
+                const x = material.normalMap.repeat.x
+                material.normalMap.repeat.set(x, value)
+            })
+
+            break;
+
+
         case "frame":
 
             const frameFolder = gui.addFolder("Frame")

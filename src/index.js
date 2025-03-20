@@ -4,6 +4,7 @@ import { FontLoader, OrbitControls, RGBELoader, TextGeometry } from "three/examp
 import addGUI from "./GUI"
 import gsap from "gsap"
 import addArrows from "./arrow"
+import { iridescence } from "three/src/nodes/TSL.js"
 
 const canvas = document.querySelector("canvas.webgl")
 
@@ -38,7 +39,6 @@ function init() {
     })
     addLetterD()
     addCube(undefined, () => {
-        console.log("onLoad in add Cube");
         addPlanes(environmentMap)
     })
     addArrows(scene)
@@ -249,7 +249,6 @@ function addPlanes(environmentMap, normals, alphaMap) {
         return
     }
 
-    console.log("has to be normals here", normals, alphaMap);
     planes = new THREE.Group()
     
     const params = {
@@ -263,9 +262,14 @@ function addPlanes(environmentMap, normals, alphaMap) {
         specularIntensity: 0,
         specularColor: 0xffffff,
         envMapIntensity: 1,
-        exposure: 0.9,
+        exposure: 1,
         transmission: 1,
-        transmissionResolutionScale: 1,
+        dispersion: 1,
+        reflectivity: 0.1,
+        iridescence: 0,
+        iridescenceIOR: 1.3,
+        normalScaleX: 1,
+        normalScaleY: 1,
     };
 
     const innerRadius = getCubeInnerRadius()
@@ -289,6 +293,10 @@ function addPlanes(environmentMap, normals, alphaMap) {
             specularColor: params.specularColor,
             side: THREE.FrontSide,
             transparent: true,
+            dispersion: params.dispersion,
+            reflectivity: params.reflectivity,
+            iridescence: params.iridescence,
+            iridescenceIOR : params.iridescenceIOR ,
         }
     )
         
@@ -296,7 +304,7 @@ function addPlanes(environmentMap, normals, alphaMap) {
         const newPlaneMat = planeMat.clone()
         const newParams = params
         newPlaneMat.normalMap = normal
-        addGUI(`plane${index + 1}`, newParams, newPlaneMat)
+        addGUI(`side${index + 1}`, newParams, newPlaneMat)
         const plane = new THREE.Mesh(planeGeo,newPlaneMat)
         const d0 = camera.position.z
         const d1 = camera.position.z + outerRadius
