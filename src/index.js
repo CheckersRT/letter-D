@@ -9,7 +9,7 @@ const canvas = document.querySelector("canvas.webgl")
 
 let width = window.innerWidth, height = window.innerHeight
 
-let scene, camera, pivot, renderer, controls, d, cube, planes, frameMat
+let scene, camera, pivot, renderer, controls, d, cube, planes, frameMat, raycaster
 
 init()
 
@@ -26,6 +26,7 @@ function init() {
     controls = new OrbitControls(camera, canvas)
     controls.minPolarAngle = Math.PI /2
     controls.maxPolarAngle = Math.PI /2
+    controls.enabled = false
 
     const rgbeLoader = new RGBELoader()
     const environmentMap = rgbeLoader.load("/environmentMap/2k.hdr", (environmentMap) => {
@@ -312,14 +313,15 @@ function addPlanes(environmentMap, normals, alphaMap) {
 
 
 window.addEventListener("keydown", onKeyDown)
+window.addEventListener("click", onClickArrow)
 let angle = 0
 function onKeyDown(event) {
     if(event.code !== "ArrowLeft" && event.code !== "ArrowRight") return
 	if (event.code === 'ArrowLeft') {
-		angle += Math.PI / 2;
+		updateAngle("left")
 	}
 	if (event.code === 'ArrowRight') {
-		angle -= Math.PI / 2;
+		updateAngle("right")
 	}
 
     let arrows
@@ -329,6 +331,21 @@ function onKeyDown(event) {
         }
     })
 
+    rotationAnimation(pivot, arrows, angle)
+    cageAnimation(frameMat, planes)
+}
+
+function updateAngle(direction) {
+    switch (direction) {
+        case "left": 
+            angle += Math.PI / 2;
+            break;
+        case "right":
+            angle -= Math.PI / 2;
+    }
+}
+
+function rotationAnimation(pivot, arrows, angle) {
     gsap.to(pivot.rotation, {
         y: -angle,
         duration: 1,
@@ -339,11 +356,11 @@ function onKeyDown(event) {
         duration: 1,
         ease: "power2.in"
     }, "<")
-    
-    let tl = gsap.timeline()
+}
 
-    // tl.restart()
-    tl.fromTo(frameMat, {displacementScale: 0},{
+function cageAnimation(frame, planes) {
+    let tl = gsap.timeline()
+    tl.fromTo(frame, {displacementScale: 0},{
         displacementScale: 4,
         duration: 0.5,
         ease: "power2.out",
@@ -360,8 +377,35 @@ function onKeyDown(event) {
             tl.reverse()
         }
     }, "<")
-
 }
+
+raycaster = new THREE.Raycaster()
+const pointer = new THREE.Vector2()
+function onClickArrow(event) {
+    pointer.x = (event.clientX / window.innerWidth) * 2 - 1
+    pointer.y = (event.clientY / window.innerHeight) * 2 - 1
+    raycaster.setFromCamera(pointer, camera)
+
+    let arrows
+    scene.traverse((object) => {        
+        if(object.name === "arrowContainer") {
+            arrows = object.children
+        }
+    })
+    const intersects = raycaster.intersectObjects(arrows)
+    if(intersects[0].object.name === "arrowLeft") {
+        const arrow = intersects[0].object
+        updateAngle("left")
+    } else if (intersects[0].object.name === "arrowRight") {
+        const arrow = intersects[0].object
+        updateAngle("right")
+    }
+    
+    const arrowContainer = arrows[0].parent
+    rotationAnimation(pivot, arrowContainer, angle)
+    cageAnimation(frameMat, planes)
+}
+
 
 function animate() {
     if(!d) return  

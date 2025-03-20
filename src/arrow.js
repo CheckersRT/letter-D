@@ -24,8 +24,10 @@ export default function addArrows(scene) {
     const arrowMat = new THREE.MeshStandardMaterial({side: THREE.DoubleSide})
 
     const arrowLeft = new THREE.Mesh(arrowGeo, arrowMat)
+    arrowLeft.name = "arrowLeft"
     arrowLeft.position.x = -4
     const arrowRight = new THREE.Mesh(arrowGeo, arrowMat)
+    arrowRight.name = "arrowRight"
     arrowRight.rotation.y = Math.PI
     arrowRight.position.x = 4
 
