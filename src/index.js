@@ -27,6 +27,8 @@ function init() {
     controls = new OrbitControls(camera, canvas)
     controls.minPolarAngle = Math.PI /2
     controls.maxPolarAngle = Math.PI /2
+    controls.minAzimuthAngle = Math.PI /2
+    controls.maxAzimuthAngle = Math.PI /2
     controls.enabled = false
 
     const rgbeLoader = new RGBELoader()
@@ -322,6 +324,7 @@ function addPlanes(environmentMap, normals, alphaMap) {
 
 window.addEventListener("keydown", onKeyDown)
 window.addEventListener("click", onClickArrow)
+// window.addEventListener("touchstart", onTouchArrow)
 let angle = 0
 function onKeyDown(event) {
     if(event.code !== "ArrowLeft" && event.code !== "ArrowRight") return
@@ -400,6 +403,7 @@ function onClickArrow(event) {
             arrows = object.children
         }
     })
+    if(!arrows) return
     const intersects = raycaster.intersectObjects(arrows)
     if(intersects[0].object.name === "arrowLeft") {
         const arrow = intersects[0].object
@@ -418,7 +422,7 @@ function onClickArrow(event) {
 function animate() {
     if(!d) return  
 
-    d.rotation.y += 0.01        
+    d.rotation.y += 0.002        
 
     renderer.render(scene, camera)
 }
